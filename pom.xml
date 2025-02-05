@@ -16,6 +16,7 @@
 
     <modules>
         <module>proto</module>
+        <module>aggregator-service</module>
     </modules>
 
     <properties>
