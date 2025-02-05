@@ -24,8 +24,13 @@ public class UserInformationRequestHandler {
     }
 
     public UserInformation getUserInformation(UserInformationRequest request) {
+        // obtain user
         User user = this.userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UnknownUserException(request.getUserId()));
+
+        // obtain the Portfolioitems list of the user
+        List<PortfolioItem> listPortfolioItems = this.portfolioItemRepository.findAllByUserId(request.getUserId());
+
     }
 
 }
