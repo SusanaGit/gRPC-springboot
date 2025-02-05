@@ -11,7 +11,7 @@ public class User {
     @Id
     private Integer id;
     private String name;
-    private Integer blance;
+    private Integer balance;
 
     public Integer getId() {
         return id;
@@ -29,11 +29,11 @@ public class User {
         this.name = name;
     }
 
-    public Integer getBlance() {
-        return blance;
+    public Integer getBalance() {
+        return balance;
     }
 
-    public void setBlance(Integer blance) {
-        this.blance = blance;
+    public void setBalance(Integer blance) {
+        this.balance = blance;
     }
 }

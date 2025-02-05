@@ -7,6 +7,7 @@ import com.susanafigueroa.userservice.entity.User;
 import com.susanafigueroa.userservice.exceptions.UnknownUserException;
 import com.susanafigueroa.userservice.repository.PortfolioItemRepository;
 import com.susanafigueroa.userservice.repository.UserRepository;
+import com.susanafigueroa.userservice.util.EntityMessageMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,14 +24,19 @@ public class UserInformationRequestHandler {
         this.portfolioItemRepository = portfolioItemRepository;
     }
 
+    // obtengo la información desde la request gRPC (UserInformationRequest)
     public UserInformation getUserInformation(UserInformationRequest request) {
-        // obtain user
+        // busco el user en la base de datos
+        // si no existe el user en la base de datos lanza excepción
         User user = this.userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UnknownUserException(request.getUserId()));
 
-        // obtain the Portfolioitems list of the user
+        // obtengo el listado de PortfolioItems del user
         List<PortfolioItem> listPortfolioItems = this.portfolioItemRepository.findAllByUserId(request.getUserId());
 
+        // transformo las entidades User y PortfolioItem de la db JPA en un DTO gRPC (UserInformation) usando el método
+        // toUserInformation para enviarlo como respuesta al cliente
+        return EntityMessageMapper.toUserInformation(user, listPortfolioItems);
     }
 
 }
