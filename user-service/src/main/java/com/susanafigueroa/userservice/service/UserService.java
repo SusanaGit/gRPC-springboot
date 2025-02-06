@@ -25,7 +25,7 @@ public class UserService extends UserServiceGrpc.UserServiceImplBase {
         // envía la respuesta al cliente
         responseObserver.onNext(userInformation);
 
-        // respuesta completa y finaliza la comunicación
+        // respuesta completada y finaliza la comunicación
         responseObserver.onCompleted();
     }
 

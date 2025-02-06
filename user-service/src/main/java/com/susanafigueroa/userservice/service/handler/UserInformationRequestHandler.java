@@ -25,6 +25,7 @@ public class UserInformationRequestHandler {
     }
 
     // obtengo la información desde la request gRPC (UserInformationRequest)
+    // envío la información en DTO gRPC (UserInformation)
     public UserInformation getUserInformation(UserInformationRequest request) {
         // busco el user en la base de datos
         // si no existe el user en la base de datos lanza excepción
