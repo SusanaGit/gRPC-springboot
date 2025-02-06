@@ -9,6 +9,7 @@ import com.susanafigueroa.userservice.exceptions.UnknownUserException;
 import com.susanafigueroa.userservice.repository.PortfolioItemRepository;
 import com.susanafigueroa.userservice.repository.UserRepository;
 import com.susanafigueroa.userservice.util.EntityMessageMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +23,7 @@ public class StockTradeRequestHandler {
         this.portfolioItemRepository = portfolioItemRepository;
     }
 
+    @Transactional
     // the user can buy stock
     public StockTradeResponse buyStock(StockTradeRequest request) {
         // validate ticker
@@ -35,8 +37,20 @@ public class StockTradeRequestHandler {
         var totalPrice = request.getQuantity() * request.getPrice();
         this.validateUserbalance(user.getId(), user.getBalance(), totalPrice);
 
+        // valid request: update the user balance after buy
+        user.setBalance(user.getBalance() - totalPrice);
 
+        // increase the quantity of the stock
+        this.portfolioItemRepository.findByUserIdAndTicker(user.getId(), request.getTicker())
+                .ifPresentOrElse(
+                        // si el user ya tiene este tipo de acción, aumenta la cantidad
+                        item -> item.setQuantity(item.getQuantity() + request.getQuantity()),
+                        // si el user aún no tiene este tipo de acción, se crea un nuevo registro en la db
+                        // con la información de la compra de la/s nuevas acciones
+                        () -> this.portfolioItemRepository.save(EntityMessageMapper.toPortfolioItem(request))
+                );
 
+        return EntityMessageMapper.toStockTradeResponse(request, user.getBalance());
     }
 
     // to validate the ticker
