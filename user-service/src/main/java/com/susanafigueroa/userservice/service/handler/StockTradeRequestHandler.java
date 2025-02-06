@@ -25,6 +25,11 @@ public class StockTradeRequestHandler {
         // validate ticker
         this.validateTicker(request.getTicker());
 
+        // validate user
+        var user = this.userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UnknownUserException(request.getUserId()));
+
+
     }
 
     // validate the ticker
